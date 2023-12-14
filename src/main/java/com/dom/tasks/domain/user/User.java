@@ -17,5 +17,4 @@ public class User {
     private Set<Role> roles;
     private List<Task> tasks;
 
-
 }
