@@ -6,6 +6,7 @@ import com.dom.tasks.repository.UserRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 

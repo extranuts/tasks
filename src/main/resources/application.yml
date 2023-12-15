@@ -4,5 +4,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: pass
+  sql:
+    init:
+      mode: always
+      continue-on-error: false
+      data-locations: classpath:demo_data.sql
 server:
   port: 8081

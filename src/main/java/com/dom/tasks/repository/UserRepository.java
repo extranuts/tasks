@@ -2,11 +2,10 @@ package com.dom.tasks.repository;
 
 import com.dom.tasks.domain.user.Role;
 import com.dom.tasks.domain.user.User;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface UserRepository  {
+public interface UserRepository {
 
     Optional<User> findById(Long id);
 
