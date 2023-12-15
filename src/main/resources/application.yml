@@ -8,6 +8,12 @@ spring:
     init:
       mode: always
       continue-on-error: false
-      data-locations: classpath:demo_data.sql
+#      data-locations: classpath:demo_data.sql
 server:
   port: 8081
+security:
+  jwt:
+    secret: aW9nZmRhaGl1cmdoYWVpd2Z2bndlZnF3Y21vZWZtcXdlZm1xY3dlZmp3ZXJxZ2hucmd1YmRnZmJha3NkamdiaWVydWdmYmFlYmdha2pkZmc=
+    access: 360000
+    refresh: 2592000000
+
