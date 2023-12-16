@@ -1,11 +1,17 @@
 package com.dom.tasks.repository.impl;
 
+import com.dom.tasks.domain.exception.ResourceMappingException;
 import com.dom.tasks.domain.task.Task;
 import com.dom.tasks.repository.DataSourceConfig;
 import com.dom.tasks.repository.TaskRepository;
+import com.dom.tasks.repository.mappers.TaskRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,8 +65,18 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public Optional<Task> findById(Long id) {
-        return Optional.empty();
+        try {
+            Connection connection =dataSourceConfig.getConnection();
+            PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_SQL);
+            statement.setLong(1, id);
+            try(ResultSet resultSet = statement.executeQuery()) {
+                return Optional.ofNullable(TaskRowMapper.mapRow(resultSet));
+            }
+        } catch (Exception e) {
+            throw  new ResourceMappingException("ERROR while finding user by id");
+        }
     }
+
 
     @Override
     public List<Task> findAllByUserId(Long userId) {
