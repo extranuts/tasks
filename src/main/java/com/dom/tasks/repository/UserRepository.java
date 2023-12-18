@@ -2,9 +2,11 @@ package com.dom.tasks.repository;
 
 import com.dom.tasks.domain.user.Role;
 import com.dom.tasks.domain.user.User;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Optional;
 
+@Mapper
 public interface UserRepository {
 
     Optional<User> findById(Long id);

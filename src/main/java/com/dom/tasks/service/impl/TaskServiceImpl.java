@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
@@ -20,14 +21,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(readOnly = true)
     public Task getById(Long id) {
-        return taskRepository.findById(id).orElseThrow(() ->
-                new ResourceNotFoundException("Task not found"));
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found..."));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Task> getAllByUserId(Long userId) {
-        return taskRepository.findAllByUserId(userId);
+    public List<Task> getAllByUserId(Long id) {
+        return taskRepository.findAllByUserId(id);
     }
 
     @Override
@@ -39,7 +40,6 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.update(task);
         return task;
     }
-
 
     @Override
     @Transactional
