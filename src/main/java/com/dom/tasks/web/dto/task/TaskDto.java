@@ -20,7 +20,6 @@ public class TaskDto {
     private String title;
     @Length(max = 255, message = "Task description must not exceed 255", groups = {OnCreate.class, OnUpdate.class})
     private String description;
-
     private Status status;
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
