@@ -86,7 +86,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findById(Long id) {
         try {
             Connection connection = dataSourceConfig.getConnection();
-            PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_SQL ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
+            PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_SQL, ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 return Optional.ofNullable(UserRowMapper.mapRow(resultSet));
@@ -100,7 +100,7 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findByUsername(String username) {
         try {
             Connection connection = dataSourceConfig.getConnection();
-            PreparedStatement statement = connection.prepareStatement(FIND_BY_USERNAME ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
+            PreparedStatement statement = connection.prepareStatement(FIND_BY_USERNAME, ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
             statement.setString(1, username);
             try (ResultSet resultSet = statement.executeQuery()) {
                 return Optional.ofNullable(UserRowMapper.mapRow(resultSet));
