@@ -1,4 +1,4 @@
-package com.dom.tasks.web.controller;
+package com.dom.tasks.web.security.expression;
 
 import com.dom.tasks.domain.user.Role;
 import com.dom.tasks.service.UserService;

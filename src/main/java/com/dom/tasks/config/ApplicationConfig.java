@@ -2,6 +2,7 @@ package com.dom.tasks.config;
 
 import com.dom.tasks.web.security.JwtTokenFilter;
 import com.dom.tasks.web.security.JwtTokenProvider;
+import com.dom.tasks.web.security.expression.CustomSecurityExceptionHandler;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -31,7 +32,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor(onConstructor = @__(@Lazy))
 public class ApplicationConfig {
 
@@ -49,6 +50,13 @@ public class ApplicationConfig {
         return configuration.getAuthenticationManager();
     }
 
+    @Bean
+    public MethodSecurityExpressionHandler expressionHandler() {
+        DefaultMethodSecurityExpressionHandler expressionHandler
+                = new CustomSecurityExceptionHandler();
+        expressionHandler.setApplicationContext(applicationContext);
+        return expressionHandler;
+    }
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
