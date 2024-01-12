@@ -10,7 +10,12 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-
+    /**
+     * Retrieves a list of tasks associated with a specific user.
+     *
+     * @param userId the ID of the user
+     * @return a list of tasks
+     */
     @Query(value = """
             select * from tasks t
             join users_tasks ut on t.id = ut.task_id
