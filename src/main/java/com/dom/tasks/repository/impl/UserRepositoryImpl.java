@@ -3,13 +3,11 @@ package com.dom.tasks.repository.impl;
 import com.dom.tasks.domain.exception.ResourceMappingException;
 import com.dom.tasks.domain.user.Role;
 import com.dom.tasks.domain.user.User;
-import com.dom.tasks.repository.DataSourceConfig;
 import com.dom.tasks.repository.UserRepository;
 import com.dom.tasks.repository.mappers.TaskRowMapper;
 import com.dom.tasks.repository.mappers.UserRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

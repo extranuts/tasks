@@ -2,11 +2,9 @@ package com.dom.tasks.repository.impl;
 
 import com.dom.tasks.domain.exception.ResourceMappingException;
 import com.dom.tasks.domain.task.Task;
-import com.dom.tasks.repository.DataSourceConfig;
 import com.dom.tasks.repository.TaskRepository;
 import com.dom.tasks.repository.mappers.TaskRowMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
