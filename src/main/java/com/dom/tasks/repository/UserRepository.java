@@ -7,35 +7,29 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-
 public interface UserRepository extends JpaRepository<User, Long> {
-
-
-    /**
-     * Finds a user by their username.
-     *
-     * @param username the username of the user to find
-     * @return an optional user object if found, empty otherwise
-     */
-
 
     Optional<User> findByUsername(String username);
 
-
-    /**
-     * Checks if the specified user is the owner of the specified task.
-     *
-     * @param userId the ID of the user
-     * @param taskId the ID of the task
-     * @return true if the user is the owner of the task, false otherwise
-     */
     @Query(value = """
-            select exists(
-            SELECT 1
-            from users_tasks
-            where user_id = :userId
-            and task_id = :taskId)
+            SELECT u.id as id,
+            u.name as name,
+            u.username as username,
+            u.password as password
+            FROM users_tasks ut
+            JOIN users u ON ut.user_id = u.id
+            WHERE ut.task_id = :taskId
             """, nativeQuery = true)
-    boolean isTaskOwner(@Param("userId") Long userId, @Param("taskId") Long taskId);
+    Optional<User> findTaskAuthor(@Param("taskId") Long taskId);
+
+    @Query(value = """
+             SELECT exists(
+                           SELECT 1
+                           FROM users_tasks
+                           WHERE user_id = :userId
+                             AND task_id = :taskId)
+            """, nativeQuery = true)
+    boolean isTaskOwner(@Param("userId") Long userId,
+                        @Param("taskId") Long taskId);
 
 }

@@ -1,15 +1,16 @@
 package com.dom.tasks.config;
 
+import com.dom.tasks.service.props.MinioProperties;
 import com.dom.tasks.web.security.JwtTokenFilter;
 import com.dom.tasks.web.security.JwtTokenProvider;
 import com.dom.tasks.web.security.expression.CustomSecurityExceptionHandler;
+import io.minio.MinioClient;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,6 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -32,13 +32,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor(onConstructor = @__(@Lazy))
 public class ApplicationConfig {
 
     private final JwtTokenProvider tokenProvider;
-
     private final ApplicationContext applicationContext;
+    private final MinioProperties minioProperties;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -46,7 +46,9 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(final AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(
+            final AuthenticationConfiguration configuration
+    ) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
@@ -57,6 +59,16 @@ public class ApplicationConfig {
         expressionHandler.setApplicationContext(applicationContext);
         return expressionHandler;
     }
+
+    @Bean
+    public MinioClient minioClient() {
+        return MinioClient.builder()
+                .endpoint(minioProperties.getUrl())
+                .credentials(minioProperties.getAccessKey(),
+                        minioProperties.getSecretKey())
+                .build();
+    }
+
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
@@ -78,31 +90,47 @@ public class ApplicationConfig {
                 );
     }
 
-
-    @SneakyThrows
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) {
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
+    public SecurityFilterChain filterChain(final HttpSecurity httpSecurity)
+            throws Exception {
+        httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        sessionManagement
+                                .sessionCreationPolicy(
+                                        SessionCreationPolicy.STATELESS
+                                )
+                )
                 .exceptionHandling(configurer ->
-                        configurer.authenticationEntryPoint((request, response, exception) -> {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write("Unauthorized.");
-        })
-                                .accessDeniedHandler((request, response, exception) -> {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.getWriter().write("Unauthorized.");
-        }))
+                        configurer.authenticationEntryPoint(
+                                        (request, response, exception) -> {
+                                            response.setStatus(
+                                                    HttpStatus.UNAUTHORIZED
+                                                            .value()
+                                            );
+                                            response.getWriter()
+                                                    .write("Unauthorized.");
+                                        })
+                                .accessDeniedHandler(
+                                        (request, response, exception) -> {
+                                            response.setStatus(
+                                                    HttpStatus.FORBIDDEN
+                                                            .value()
+                                            );
+                                            response.getWriter()
+                                                    .write("Unauthorized.");
+                                        }))
                 .authorizeHttpRequests(configurer ->
                         configurer.requestMatchers("/api/v1/auth/**")
                                 .permitAll()
                                 .requestMatchers("/swagger-ui/**")
                                 .permitAll()
-                                .requestMatchers("/v3/api-docs/**").permitAll()
-                                .requestMatchers("/graphiql").permitAll()
+                                .requestMatchers("/v3/api-docs/**")
+                                .permitAll()
+                                .requestMatchers("/graphiql")
+                                .permitAll()
                                 .anyRequest().authenticated())
                 .anonymous(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JwtTokenFilter(tokenProvider),
@@ -110,4 +138,5 @@ public class ApplicationConfig {
 
         return httpSecurity.build();
     }
+
 }

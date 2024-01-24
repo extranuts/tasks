@@ -39,7 +39,7 @@ public class AuthController {
                             @RequestBody final UserDto userDto) {
         User user = userMapper.toEntity(userDto);
         User createdUser = userService.create(user);
-        return userMapper.userToDto(createdUser);
+        return userMapper.toDto(createdUser);
     }
 
     @PostMapping("/refresh")

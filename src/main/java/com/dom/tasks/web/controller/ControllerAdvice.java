@@ -1,7 +1,12 @@
 package com.dom.tasks.web.controller;
 
-import com.dom.tasks.domain.exception.*;
 
+import com.dom.tasks.domain.exception.ExceptionBody;
+import com.dom.tasks.domain.exception.AccessDeniedException;
+import com.dom.tasks.domain.exception.ImageUploadException;
+import com.dom.tasks.domain.exception.ResourceMappingException;
+import com.dom.tasks.domain.exception.ResourceNotFoundException;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -68,7 +73,7 @@ public class ControllerAdvice {
         exceptionBody.setErrors(e.getConstraintViolations().stream()
                 .collect(Collectors.toMap(
                         violation -> violation.getPropertyPath().toString(),
-                        violation -> violation.getMessage()
+                        ConstraintViolation::getMessage
                 )));
         return exceptionBody;
     }

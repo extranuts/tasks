@@ -2,10 +2,10 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
-//    id 'org.springframework.boot' version '3.2.1'
+    id "com.liferay.xml.formatter" version "1.0.11"
+    id 'checkstyle'
 }
 
-//apply plugin: 'io.spring.dependency-management'
 group = 'com.dom'
 version = '0.0.1-SNAPSHOT'
 
@@ -26,34 +26,44 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'net.lbruun.springboot:preliquibase-spring-boot-starter:1.5.0'
-
-
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.7.9'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
     implementation 'org.liquibase:liquibase-core:4.25.0'
+    implementation 'net.lbruun.springboot:preliquibase-spring-boot-starter:1.5.0'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+    implementation 'io.minio:minio:8.5.7'
 
+    implementation 'com.graphql-java-kickstart:graphql-java-kickstart:15.0.0'
+    implementation 'com.graphql-java:graphql-java-extended-scalars:20.2'
+    implementation 'org.springframework.boot:spring-boot-starter-graphql'
+
+
+
+    runtimeOnly 'org.postgresql:postgresql'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
     implementation 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
     implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 
-
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
-    runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'
+
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
